@@ -8,5 +8,5 @@ services:
       - TZ
       - SERVICE_HOST=${SERVICE_HOST}
       - SERVICE_DOMAIN=${SERVICE_DOMAIN}
-      - SERVICE_URL="${SERVICE_DOMAIN}/bar/app3"
+      - SERVICE_URL="${SERVICE_DOMAIN}/bar/app1"
     command: /bin/sh -c "while :; do sleep 10; done"
