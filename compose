@@ -1,0 +1,39 @@
+#!/bin/bash
+
+if [ ! -e ./.env ]; then
+    cp -f .env.sample .env
+fi
+. .env
+
+ymls=''
+
+for c_env in ${COMPOSE_ENV[@]}; do
+
+    export PREFIX=$c_env
+    for file in `find ./compose.d/$c_env/tmpl -name "*.yml"`; do
+        . ./compose.d/$c_env/value.sh
+        dist_path=`echo $file | sed -e "s;tmpl/;;g"`
+        envsubst < $file > $dist_path
+    done
+
+    for file in `find ./compose.d/$c_env -maxdepth 1 -name "*.yml"`; do
+        ymls="-f $file $ymls"
+    done
+done
+
+function up () {
+    eval "docker-compose $ymls up -d"
+}
+
+function down () {
+    eval "docker-compose $ymls down"
+}
+
+case $1 in
+    "up")
+        up
+    ;;
+    "down")
+        down
+    ;;
+esac
