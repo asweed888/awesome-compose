@@ -1,0 +1,12 @@
+version: "3"
+services:
+  ${PREFIX}_app1:
+    image: alpine
+    container_name: ${PREFIX}_app1
+    restart: on-failure
+    environment:
+      - TZ
+      - SERVICE_HOST=${SERVICE_HOST}
+      - SERVICE_DOMAIN=${SERVICE_DOMAIN}
+      - SERVICE_URL="${SERVICE_DOMAIN}/bar/app3"
+    command: /bin/sh -c "while :; do sleep 10; done"
