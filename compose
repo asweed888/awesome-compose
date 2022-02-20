@@ -30,11 +30,19 @@ done
 
 
 up () {
+    if [ "$COMPOSE_BUILD_ENABLE" == "true" ]; then
+        build
+    fi
+
     eval "docker-compose $ymls up -d"
 }
 
 down () {
     eval "docker-compose $ymls down"
+}
+
+build () {
+    eval "docker-compose $ymls build"
 }
 
 case $1 in
@@ -43,5 +51,8 @@ case $1 in
     ;;
     "down")
         down
+    ;;
+    "build")
+        build
     ;;
 esac
