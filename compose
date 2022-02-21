@@ -16,7 +16,9 @@ for namespace in ${NAMESPACES[@]}; do
 
     export NS=$namespace
     for file in `ls -1 ./compose.d/$namespace/*.yml`; do
-        . ./compose.d/$namespace/value.sh
+        if [ -e ./compose.d/$namespace/value.sh ]; then
+            . ./compose.d/$namespace/value.sh
+        fi
 
         dist_path="./compose.d/.dist/${namespace}_${file##*/}"
         envsubst < $file > $dist_path
