@@ -27,7 +27,5 @@ for namespace in ${NAMESPACES[@]}; do
     done
 
     export COMPOSE_PROJECT_NAME=$namespace
-    cd ./compose.d/$namespace
     eval "docker-compose $ymls $@"
-    cd $OLDPWD
 done
