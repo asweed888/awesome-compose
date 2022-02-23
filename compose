@@ -8,31 +8,8 @@ if [ ! -e ./compose.d/.dist ]; then
     mkdir ./compose.d/.dist
 fi
 
-if [ ! -e ./.ymls ]; then
-    mkdir ./.ymls
-fi
-
 . .env
 rm -f ./compose.d/.dist/*.yml
-
-
-up () {
-    if [ "$COMPOSE_BUILD_ENABLE" == "true" ]; then
-        build
-    fi
-
-    eval "docker-compose $ymls up -d"
-}
-
-down () {
-    eval "docker-compose $ymls down"
-}
-
-build () {
-    eval "docker-compose $ymls build"
-}
-
-
 
 for namespace in ${NAMESPACES[@]}; do
     ymls=''
@@ -50,22 +27,7 @@ for namespace in ${NAMESPACES[@]}; do
     done
 
     export COMPOSE_PROJECT_NAME=$namespace
-    case $1 in
-        "up")
-            cd ./compose.d/$namespace
-            up
-            cd $OLDPWD
-        ;;
-        "down")
-            cd ./compose.d/$namespace
-            down
-            cd $OLDPWD
-        ;;
-        "build")
-            cd ./compose.d/$namespace
-            build
-            cd $OLDPWD
-        ;;
-    esac
-    echo $ymls > ./.ymls/$namespace
+    cd ./compose.d/$namespace
+    eval "docker-compose $ymls $@"
+    cd $OLDPWD
 done
