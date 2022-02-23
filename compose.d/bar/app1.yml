@@ -1,8 +1,7 @@
 version: "3"
 services:
-  ${NS}_app1:
+  app1:
     image: alpine
-    container_name: ${NS}_app1
     restart: on-failure
     environment:
       - TZ

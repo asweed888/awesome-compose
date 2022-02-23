@@ -8,27 +8,12 @@ if [ ! -e ./compose.d/.dist ]; then
     mkdir ./compose.d/.dist
 fi
 
+if [ ! -e ./.ymls ]; then
+    mkdir ./.ymls
+fi
+
 . .env
 rm -f ./compose.d/.dist/*.yml
-
-ymls=''
-for namespace in ${NAMESPACES[@]}; do
-
-    export NS=$namespace
-    for file in `ls -1 ./compose.d/$namespace/*.yml`; do
-        if [ -e ./compose.d/$namespace/value.sh ]; then
-            . ./compose.d/$namespace/value.sh
-        fi
-
-        dist_path="./compose.d/.dist/${namespace}_${file##*/}"
-        envsubst < $file > $dist_path
-    done
-
-done
-
-for file in `ls -1 ./compose.d/.dist/*.yml`; do
-    ymls="-f $file $ymls"
-done
 
 
 up () {
@@ -47,14 +32,40 @@ build () {
     eval "docker-compose $ymls build"
 }
 
-case $1 in
-    "up")
-        up
-    ;;
-    "down")
-        down
-    ;;
-    "build")
-        build
-    ;;
-esac
+
+
+for namespace in ${NAMESPACES[@]}; do
+    ymls=''
+    for file in `ls -1 ./compose.d/$namespace/*.yml`; do
+        if [ -e ./compose.d/$namespace/value.sh ]; then
+            . ./compose.d/$namespace/value.sh
+        fi
+
+        dist_path="./compose.d/.dist/${namespace}_${file##*/}"
+        envsubst < $file > $dist_path
+    done
+
+    for file in `ls -1 ./compose.d/.dist/${namespace}_*.yml`; do
+        ymls="-f $PWD/compose.d/.dist/${file##*/} $ymls"
+    done
+
+    export COMPOSE_PROJECT_NAME=$namespace
+    case $1 in
+        "up")
+            cd ./compose.d/$namespace
+            up
+            cd $OLDPWD
+        ;;
+        "down")
+            cd ./compose.d/$namespace
+            down
+            cd $OLDPWD
+        ;;
+        "build")
+            cd ./compose.d/$namespace
+            build
+            cd $OLDPWD
+        ;;
+    esac
+    echo $ymls > ./.ymls/$namespace
+done
