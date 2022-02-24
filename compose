@@ -9,7 +9,7 @@ if [ ! -e ./compose.d/.dist ]; then
 fi
 
 . .env
-for line in `cat .env`; do
+for line in `cat .env | grep -v -e '^\s*#' -e '^\s*$'`; do
   eval "export $line"
 done
 NAMESPACES=(${NAMESPACES//:/ })
