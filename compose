@@ -9,13 +9,21 @@ if [ ! -e ./compose.d/.dist ]; then
 fi
 
 . .env
+for line in `cat .env`; do
+  eval "export $line"
+done
+NAMESPACES=(${NAMESPACES//:/ })
+
 rm -f ./compose.d/.dist/*.yml
 
 for namespace in ${NAMESPACES[@]}; do
     ymls=''
     for file in `ls -1 ./compose.d/$namespace/*.yml`; do
-        if [ -e ./compose.d/$namespace/value.sh ]; then
-            . ./compose.d/$namespace/value.sh
+        if [ -e ./compose.d/$namespace/.env ]; then
+            . ./compose.d/$namespace/.env
+            for line in `cat ./compose.d/$namespace/.env`; do
+              eval "export $line"
+            done
         fi
 
         dist_path="./compose.d/.dist/${namespace}_${file##*/}"
