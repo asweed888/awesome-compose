@@ -21,7 +21,7 @@ for namespace in ${NAMESPACES[@]}; do
     for file in `ls -1 ./compose.d/$namespace/*.yml`; do
         if [ -e ./compose.d/$namespace/.env ]; then
             . ./compose.d/$namespace/.env
-            for line in `cat ./compose.d/$namespace/.env`; do
+            for line in `cat ./compose.d/$namespace/.env | grep -v -e '^\s*#' -e '^\s*$'`; do
               eval "export $line"
             done
         fi
