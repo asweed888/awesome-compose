@@ -5,7 +5,7 @@ services:
     restart: on-failure
     environment:
       - TZ
-      - SERVICE_HOST=${SERVICE_HOST}
-      - SERVICE_DOMAIN=${SERVICE_DOMAIN}
+      - SERVICE_HOST
+      - SERVICE_DOMAIN
       - SERVICE_URL="${SERVICE_DOMAIN}/foo/app1"
     command: /bin/sh -c "while :; do sleep 10; done"
