@@ -17,6 +17,7 @@ NAMESPACES=(${NAMESPACES//:/ })
 rm -f ./compose.d/.dist/*.yml
 
 for namespace in ${NAMESPACES[@]}; do
+    export namespace=$namespace
     ymls=''
     for file in `ls -1 ./compose.d/$namespace/*.yml`; do
         if [ -e ./compose.d/$namespace/.env ]; then
