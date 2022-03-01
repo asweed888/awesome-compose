@@ -18,6 +18,15 @@ rm -f ./compose.d/.dist/*.yml
 
 for namespace in ${NAMESPACES[@]}; do
     export namespace=$namespace
+
+    COMPOSE_PROJECT_NAME=""
+    eval "$(cat .env | grep '^COMPOSE_PROJECT_NAME')"
+    if [ -z "$COMPOSE_PROJECT_NAME" ]; then
+        export COMPOSE_PROJECT_NAME=$namespace
+    else
+        export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME}_$namespace"
+    fi
+
     ymls=''
     for file in `ls -1 ./compose.d/$namespace/*.yml`; do
         if [ -e ./compose.d/$namespace/.env ]; then
@@ -35,12 +44,5 @@ for namespace in ${NAMESPACES[@]}; do
         ymls="-f $PWD/compose.d/.dist/${file##*/} $ymls"
     done
 
-    COMPOSE_PROJECT_NAME=""
-    eval "$(cat .env | grep '^COMPOSE_PROJECT_NAME')"
-    if [ -z "$COMPOSE_PROJECT_NAME" ]; then
-        export COMPOSE_PROJECT_NAME=$namespace
-    else
-        export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME}_$namespace"
-    fi
     eval "docker-compose $ymls $@"
 done
