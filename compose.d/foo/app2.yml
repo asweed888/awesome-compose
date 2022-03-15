@@ -4,8 +4,8 @@ services:
     image: alpine
     restart: on-failure
     environment:
-      - TZ
-      - SERVICE_HOST
-      - SERVICE_DOMAIN
-      - SERVICE_URL="${SERVICE_DOMAIN}/foo/app2"
+      TZ:
+      SERVICE_HOST:
+      SERVICE_DOMAIN:
+      SERVICE_URL: "${SERVICE_DOMAIN}/foo/app2"
     command: /bin/sh -c "while :; do sleep 10; done"
